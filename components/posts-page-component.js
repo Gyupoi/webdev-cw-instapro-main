@@ -2,7 +2,7 @@ import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
 
-export function renderPostsPageComponent({ appEl }) {
+export function renderPostsPageComponent({ appEl, onLikeClick }) {
   // @TODO: реализовать рендер постов из api
   console.log("Актуальный список постов:", posts);
 
@@ -78,4 +78,20 @@ export function renderPostsPageComponent({ appEl }) {
       });
     });
   }
+  
+  document.querySelectorAll(".like-button").forEach((buttonEl) => {
+  buttonEl.addEventListener("click", () => {
+
+    const post = posts.find(
+      (post) => post.id === buttonEl.dataset.postId
+    );
+
+    onLikeClick({
+      postId: post.id,
+      isLiked: post.isLiked,
+    });
+
+  });
+});
+
 }

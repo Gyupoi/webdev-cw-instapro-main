@@ -38,6 +38,25 @@ export function getUserPosts({ userId, token }) {
     });
 }
 
+export function toggleLike({ postId, isLiked, token }) {
+  return fetch(
+    `${postsHost}/${postId}/${isLiked ? "dislike" : "like"}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+    }
+  )
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+
+      return response.json();
+    });
+}
+
 export function registerUser({ login, password, name, imageUrl }) {
   return fetch(baseHost + "/api/user", {
     method: "POST",

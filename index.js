@@ -1,4 +1,4 @@
-import { getPosts, getUserPosts, addPost } from "./api.js";
+import { getPosts, getUserPosts, addPost, toggleLike } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -140,11 +140,24 @@ const renderApp = () => {
     });
   }
 
-  if (page === POSTS_PAGE) {
-    return renderPostsPageComponent({
-      appEl,
-    });
-  }
+ if (page === POSTS_PAGE) {
+  return renderPostsPageComponent({
+    appEl,
+    onLikeClick: ({ postId, isLiked }) => {
+      toggleLike({
+        postId,
+        isLiked,
+        token: getToken(),
+      })
+       .then(() => {
+          goToPage(page);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+  });
+}
 
   if (page === USER_POSTS_PAGE) {
   return renderPostsPageComponent({
