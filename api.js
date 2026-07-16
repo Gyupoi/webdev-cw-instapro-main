@@ -23,6 +23,21 @@ export function getPosts({ token }) {
     });
 }
 
+export function getUserPosts({ userId, token }) {
+  return fetch(postsHost, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      return data.posts.filter((post) => post.user.id === userId);
+    });
+}
+
 export function registerUser({ login, password, name, imageUrl }) {
   return fetch(baseHost + "/api/user", {
     method: "POST",
