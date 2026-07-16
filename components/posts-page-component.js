@@ -1,9 +1,9 @@
+import { formatDate } from "../helpers.js";
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
 
 export function renderPostsPageComponent({ appEl, onLikeClick }) {
-  // @TODO: реализовать рендер постов из api
   console.log("Актуальный список постов:", posts);
 
   /**
@@ -56,7 +56,7 @@ export function renderPostsPageComponent({ appEl, onLikeClick }) {
           </p>
 
           <p class="post-date">
-            ${post.createdAt}
+            ${formatDate(post.createdAt)}
           </p>
         </li>
       `;
