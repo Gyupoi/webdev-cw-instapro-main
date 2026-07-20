@@ -121,6 +121,7 @@ const renderApp = () => {
   if (page === ADD_POSTS_PAGE) {
     return renderAddPostPageComponent({
       appEl,
+      goToPage,
       onAddPostClick({ description, imageUrl }) {
 
   addPost({
@@ -143,6 +144,7 @@ const renderApp = () => {
  if (page === POSTS_PAGE) {
   return renderPostsPageComponent({
     appEl,
+    goToPage,
     onLikeClick: ({ postId, isLiked }) => {
       toggleLike({
         postId,

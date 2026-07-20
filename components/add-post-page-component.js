@@ -1,23 +1,33 @@
 import { renderUploadImageComponent } from "./upload-image-component.js";
+import { POSTS_PAGE } from "../routes.js";
 
-export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
+export function renderAddPostPageComponent({ appEl, onAddPostClick, goToPage, }) {
   const render = () => {
 
     const appHtml = `
       <div class="page-container">
-        <div class="header-container"></div>
+  <div class="header-container"></div>
 
-        <textarea 
-          class="post-description"
-          placeholder="Описание поста"
-        ></textarea>
+  <div class="add-post-card">
+    <h2 class="add-post-title">Новый пост</h2>
 
-        <div class="upload-image-container"></div>
+    <textarea
+      class="post-description"
+      placeholder="Добавьте описание поста..."
+    ></textarea>
 
-        <button class="button" id="add-button">
-          Добавить
-        </button>
-      </div>
+    <div class="upload-image-container"></div>
+
+    <div class="add-post-buttons">
+      <button class="secondary-button" id="cancel-button">
+      Отмена
+      </button>
+
+      <button class="button" id="add-button">
+      Опубликовать
+      </button>
+    </div>
+</div>
     `;
 
     appEl.innerHTML = appHtml;
@@ -46,6 +56,12 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
         });
 
       });
+        document
+  .getElementById("cancel-button")
+  .addEventListener("click", () => {
+    goToPage(POSTS_PAGE);
+  });
+  
   };
 
   render();
