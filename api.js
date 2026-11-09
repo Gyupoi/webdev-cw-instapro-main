@@ -1,6 +1,6 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
-const personalKey = "prod";
+const personalKey = "tim";
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
@@ -20,6 +20,40 @@ export function getPosts({ token }) {
     })
     .then((data) => {
       return data.posts;
+    });
+}
+
+export function getUserPosts({ userId, token }) {
+  return fetch(postsHost, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      return data.posts.filter((post) => post.user.id === userId);
+    });
+}
+
+export function toggleLike({ postId, isLiked, token }) {
+  return fetch(
+    `${postsHost}/${postId}/${isLiked ? "dislike" : "like"}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+    }
+  )
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+
+      return response.json();
     });
 }
 
@@ -64,6 +98,29 @@ export function uploadImage({ file }) {
     method: "POST",
     body: data,
   }).then((response) => {
+    return response.json();
+  });
+}
+
+export function addPost({ description, imageUrl, token }) {
+  return fetch(postsHost, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+    body: JSON.stringify({
+      description,
+      imageUrl,
+    }),
+  }).then((response) => {
+    if (response.status === 400) {
+      throw new Error("Неверные данные поста");
+    }
+
+    if (response.status === 401) {
+      throw new Error("Нет авторизации");
+    }
+
     return response.json();
   });
 }

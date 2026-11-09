@@ -1,4 +1,4 @@
-import { getPosts } from "./api.js";
+import { getPosts, getUserPosts, addPost, toggleLike } from "./api.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
 import { renderAuthPageComponent } from "./components/auth-page-component.js";
 import {
@@ -67,12 +67,24 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
-      // @@TODO: реализовать получение постов юзера из API
-      console.log("Открываю страницу пользователя: ", data.userId);
+
+  page = LOADING_PAGE;
+  renderApp();
+
+  return getUserPosts({
+    userId: data.userId,
+    token: getToken(),
+  })
+    .then((newPosts) => {
       page = USER_POSTS_PAGE;
-      posts = [];
-      return renderApp();
-    }
+      posts = newPosts;
+      renderApp();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+}
 
     page = newPage;
     renderApp();
@@ -109,25 +121,51 @@ const renderApp = () => {
   if (page === ADD_POSTS_PAGE) {
     return renderAddPostPageComponent({
       appEl,
+      goToPage,
       onAddPostClick({ description, imageUrl }) {
-        // @TODO: реализовать добавление поста в API
-        console.log("Добавляю пост...", { description, imageUrl });
-        goToPage(POSTS_PAGE);
-      },
+
+  addPost({
+    description,
+    imageUrl,
+    token: getToken(),
+  })
+    .then(() => {
+      goToPage(POSTS_PAGE);
+    })
+    .catch((error) => {
+      console.error(error);
+      alert(error.message);
+    });
+
+},
     });
   }
 
-  if (page === POSTS_PAGE) {
-    return renderPostsPageComponent({
-      appEl,
-    });
-  }
+ if (page === POSTS_PAGE) {
+  return renderPostsPageComponent({
+    appEl,
+    goToPage,
+    onLikeClick: ({ postId, isLiked }) => {
+      toggleLike({
+        postId,
+        isLiked,
+        token: getToken(),
+      })
+       .then(() => {
+          goToPage(page);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+  });
+}
 
   if (page === USER_POSTS_PAGE) {
-    // @TODO: реализовать страницу с фотографиями отдельного пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
-  }
+  return renderPostsPageComponent({
+    appEl,
+  });
+}
 };
 
 goToPage(POSTS_PAGE);
